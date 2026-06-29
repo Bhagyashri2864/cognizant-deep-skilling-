@@ -1,0 +1,127 @@
+SET SERVEROUTPUT ON;
+
+-------------------------------------------------------
+-- Scenario 1
+-- Apply 1% discount to loan interest for customers
+-- whose age is above 60 years
+-------------------------------------------------------
+
+DECLARE
+
+CURSOR c1 IS
+
+SELECT
+c.CustomerID,
+c.DOB,
+l.LoanID,
+l.InterestRate
+
+FROM Customers c
+JOIN Loans l
+
+ON c.CustomerID=l.CustomerID;
+
+v_age NUMBER;
+
+BEGIN
+
+FOR rec IN c1 LOOP
+
+v_age:=TRUNC(MONTHS_BETWEEN(SYSDATE,rec.DOB)/12);
+
+IF v_age>60 THEN
+
+UPDATE Loans
+
+SET InterestRate=InterestRate-1
+
+WHERE LoanID=rec.LoanID;
+
+DBMS_OUTPUT.PUT_LINE('Discount Applied to Customer ID : '
+||rec.CustomerID);
+
+END IF;
+
+END LOOP;
+
+COMMIT;
+
+END;
+/
+
+-------------------------------------------------------
+-- Scenario 2
+-- Set VIP flag for balance greater than 10000
+-------------------------------------------------------
+
+ALTER TABLE Customers
+ADD IsVIP VARCHAR2(5);
+
+BEGIN
+
+FOR rec IN
+
+(
+SELECT CustomerID,Balance
+FROM Customers
+)
+
+LOOP
+
+IF rec.Balance>10000 THEN
+
+UPDATE Customers
+
+SET IsVIP='TRUE'
+
+WHERE CustomerID=rec.CustomerID;
+
+DBMS_OUTPUT.PUT_LINE('VIP Customer : '
+||rec.CustomerID);
+
+END IF;
+
+END LOOP;
+
+COMMIT;
+
+END;
+/
+
+-------------------------------------------------------
+-- Scenario 3
+-- Print reminders for loans due within 30 days
+-------------------------------------------------------
+
+BEGIN
+
+FOR rec IN
+
+(
+SELECT LoanID,
+CustomerID,
+EndDate
+
+FROM Loans
+
+WHERE EndDate BETWEEN SYSDATE AND SYSDATE+30
+)
+
+LOOP
+
+DBMS_OUTPUT.PUT_LINE(
+
+'Reminder Sent To Customer '
+
+||rec.CustomerID||
+
+' Loan Due Date : '
+
+||TO_CHAR(rec.EndDate,'DD-MON-YYYY')
+
+);
+
+END LOOP;
+
+END;
+/

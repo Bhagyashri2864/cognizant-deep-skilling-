@@ -1,0 +1,10 @@
+Discount Applied to Customer ID : 3
+Discount Applied to Customer ID : 7
+
+VIP Customer : 2
+VIP Customer : 5
+
+Reminder Sent To Customer 1 Loan Due Date : 28-JUN-2026
+Reminder Sent To Customer 3 Loan Due Date : 05-JUL-2026
+
+PL/SQL procedure successfully completed.
