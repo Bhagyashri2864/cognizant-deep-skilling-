@@ -1,0 +1,170 @@
+SET SERVEROUTPUT ON;
+
+---------------------------------------------------------
+-- Scenario 1
+-- Safe Transfer Funds
+---------------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE SafeTransferFunds(
+    p_fromAccount NUMBER,
+    p_toAccount NUMBER,
+    p_amount NUMBER
+)
+IS
+    v_balance NUMBER;
+BEGIN
+
+    SELECT Balance
+    INTO v_balance
+    FROM Accounts
+    WHERE AccountID = p_fromAccount;
+
+    IF v_balance < p_amount THEN
+        RAISE_APPLICATION_ERROR(-20001,'Insufficient Balance');
+    END IF;
+
+    UPDATE Accounts
+    SET Balance = Balance - p_amount
+    WHERE AccountID = p_fromAccount;
+
+    UPDATE Accounts
+    SET Balance = Balance + p_amount
+    WHERE AccountID = p_toAccount;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Funds transferred successfully.');
+
+EXCEPTION
+
+    WHEN OTHERS THEN
+        ROLLBACK;
+        DBMS_OUTPUT.PUT_LINE('Transfer Failed : '||SQLERRM);
+
+END;
+/
+
+---------------------------------------------------------
+-- Execute Scenario 1
+---------------------------------------------------------
+
+BEGIN
+    SafeTransferFunds(1,2,200);
+END;
+/
+
+---------------------------------------------------------
+-- Scenario 2
+-- Update Employee Salary
+---------------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE UpdateSalary(
+
+    p_empid NUMBER,
+    p_percent NUMBER
+
+)
+IS
+
+BEGIN
+
+    UPDATE Employees
+
+    SET Salary=Salary+(Salary*p_percent/100)
+
+    WHERE EmployeeID=p_empid;
+
+    IF SQL%ROWCOUNT=0 THEN
+
+        RAISE_APPLICATION_ERROR(-20002,'Employee Not Found');
+
+    END IF;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Salary Updated Successfully');
+
+EXCEPTION
+
+WHEN OTHERS THEN
+
+DBMS_OUTPUT.PUT_LINE(SQLERRM);
+
+END;
+/
+
+---------------------------------------------------------
+-- Execute Scenario 2
+---------------------------------------------------------
+
+BEGIN
+
+UpdateSalary(1,10);
+
+END;
+/
+
+---------------------------------------------------------
+-- Scenario 3
+-- Add New Customer
+---------------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE AddNewCustomer(
+
+p_id NUMBER,
+p_name VARCHAR2,
+p_dob DATE,
+p_balance NUMBER
+
+)
+
+IS
+
+BEGIN
+
+INSERT INTO Customers
+
+VALUES
+
+(
+p_id,
+p_name,
+p_dob,
+p_balance,
+SYSDATE,
+NULL
+);
+
+COMMIT;
+
+DBMS_OUTPUT.PUT_LINE('Customer Added Successfully');
+
+EXCEPTION
+
+WHEN DUP_VAL_ON_INDEX THEN
+
+DBMS_OUTPUT.PUT_LINE('Customer ID Already Exists');
+
+WHEN OTHERS THEN
+
+DBMS_OUTPUT.PUT_LINE(SQLERRM);
+
+END;
+/
+
+---------------------------------------------------------
+-- Execute Scenario 3
+---------------------------------------------------------
+
+BEGIN
+
+AddNewCustomer
+(
+3,
+'Rahul Sharma',
+TO_DATE('1998-04-12','YYYY-MM-DD'),
+25000
+);
+
+END;
+/

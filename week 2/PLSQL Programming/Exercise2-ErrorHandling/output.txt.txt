@@ -1,0 +1,7 @@
+Funds transferred successfully.
+
+Salary Updated Successfully.
+
+Customer Added Successfully.
+
+PL/SQL procedure successfully completed.
