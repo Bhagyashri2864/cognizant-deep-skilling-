@@ -1,0 +1,15 @@
+Table AUDITLOG created.
+
+Trigger UPDATECUSTOMERLASTMODIFIED created.
+
+1 row updated.
+
+Trigger LOGTRANSACTION created.
+
+1 row inserted.
+
+Trigger CHECKTRANSACTIONRULES created.
+
+1 row inserted.
+
+PL/SQL procedure successfully completed.
