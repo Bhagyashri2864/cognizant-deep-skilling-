@@ -1,0 +1,11 @@
+Monthly Statement
+
+Transaction ID : 1 Amount : 200 Type : Deposit
+
+Transaction ID : 2 Amount : 300 Type : Withdrawal
+
+Annual Fee Applied
+
+Loan Interest Updated
+
+PL/SQL procedure successfully completed.

@@ -1,0 +1,103 @@
+SET SERVEROUTPUT ON;
+
+---------------------------------------------------------
+-- Scenario 1
+-- Generate Monthly Statements
+---------------------------------------------------------
+
+DECLARE
+
+CURSOR c_transactions IS
+
+SELECT
+TransactionID,
+AccountID,
+Amount,
+TransactionType
+
+FROM Transactions
+
+WHERE EXTRACT(MONTH FROM TransactionDate)=EXTRACT(MONTH FROM SYSDATE);
+
+BEGIN
+
+DBMS_OUTPUT.PUT_LINE('Monthly Statement');
+
+FOR rec IN c_transactions LOOP
+
+DBMS_OUTPUT.PUT_LINE(
+
+'Transaction ID : '||rec.TransactionID||
+
+' Amount : '||rec.Amount||
+
+' Type : '||rec.TransactionType
+
+);
+
+END LOOP;
+
+END;
+/
+
+---------------------------------------------------------
+-- Scenario 2
+---------------------------------------------------------
+
+DECLARE
+
+CURSOR c_accounts IS
+
+SELECT AccountID,Balance
+
+FROM Accounts;
+
+BEGIN
+
+FOR rec IN c_accounts LOOP
+
+UPDATE Accounts
+
+SET Balance=Balance-100
+
+WHERE AccountID=rec.AccountID;
+
+END LOOP;
+
+COMMIT;
+
+DBMS_OUTPUT.PUT_LINE('Annual Fee Applied');
+
+END;
+/
+
+---------------------------------------------------------
+-- Scenario 3
+---------------------------------------------------------
+
+DECLARE
+
+CURSOR c_loans IS
+
+SELECT LoanID,InterestRate
+
+FROM Loans;
+
+BEGIN
+
+FOR rec IN c_loans LOOP
+
+UPDATE Loans
+
+SET InterestRate=InterestRate+0.5
+
+WHERE LoanID=rec.LoanID;
+
+END LOOP;
+
+COMMIT;
+
+DBMS_OUTPUT.PUT_LINE('Loan Interest Updated');
+
+END;
+/
