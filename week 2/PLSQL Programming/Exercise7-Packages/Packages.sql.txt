@@ -1,0 +1,125 @@
+SET SERVEROUTPUT ON;
+
+---------------------------------------------------------
+-- Package Specification
+---------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE CustomerManagement AS
+
+PROCEDURE AddCustomer
+(
+p_id NUMBER,
+p_name VARCHAR2,
+p_balance NUMBER
+);
+
+PROCEDURE UpdateCustomer
+(
+p_id NUMBER,
+p_balance NUMBER
+);
+
+FUNCTION GetBalance
+(
+p_id NUMBER
+)
+
+RETURN NUMBER;
+
+END CustomerManagement;
+/
+
+---------------------------------------------------------
+-- Package Body
+---------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE BODY CustomerManagement AS
+
+PROCEDURE AddCustomer
+(
+p_id NUMBER,
+p_name VARCHAR2,
+p_balance NUMBER
+)
+
+IS
+
+BEGIN
+
+INSERT INTO Customers
+VALUES
+(
+p_id,
+p_name,
+SYSDATE,
+p_balance,
+SYSDATE,
+NULL
+);
+
+END;
+
+PROCEDURE UpdateCustomer
+(
+p_id NUMBER,
+p_balance NUMBER
+)
+
+IS
+
+BEGIN
+
+UPDATE Customers
+
+SET Balance=p_balance
+
+WHERE CustomerID=p_id;
+
+END;
+
+FUNCTION GetBalance
+(
+p_id NUMBER
+)
+
+RETURN NUMBER
+
+IS
+
+v_balance NUMBER;
+
+BEGIN
+
+SELECT Balance
+
+INTO v_balance
+
+FROM Customers
+
+WHERE CustomerID=p_id;
+
+RETURN v_balance;
+
+END;
+
+END CustomerManagement;
+/
+
+---------------------------------------------------------
+-- Execute Package
+---------------------------------------------------------
+
+BEGIN
+
+CustomerManagement.UpdateCustomer(1,5000);
+
+DBMS_OUTPUT.PUT_LINE(
+
+'Balance : '||
+
+CustomerManagement.GetBalance(1)
+
+);
+
+END;
+/
