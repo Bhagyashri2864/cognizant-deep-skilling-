@@ -1,0 +1,154 @@
+SET SERVEROUTPUT ON;
+
+-----------------------------------------------------------
+-- Function 1
+-- Calculate Age
+-----------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION CalculateAge(
+
+    p_dob DATE
+
+)
+
+RETURN NUMBER
+
+IS
+
+    v_age NUMBER;
+
+BEGIN
+
+    v_age := FLOOR(MONTHS_BETWEEN(SYSDATE,p_dob)/12);
+
+    RETURN v_age;
+
+END;
+/
+
+-----------------------------------------------------------
+-- Test Function 1
+-----------------------------------------------------------
+
+BEGIN
+
+DBMS_OUTPUT.PUT_LINE(
+
+'Customer Age : '||
+
+CalculateAge(TO_DATE('15-JAN-1995','DD-MON-YYYY'))
+
+);
+
+END;
+/
+
+-----------------------------------------------------------
+-- Function 2
+-- Calculate Monthly Installment
+-----------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION CalculateEMI(
+
+    p_amount NUMBER,
+
+    p_years NUMBER,
+
+    p_rate NUMBER
+
+)
+
+RETURN NUMBER
+
+IS
+
+    v_emi NUMBER;
+
+BEGIN
+
+    v_emi :=
+
+    (p_amount+(p_amount*p_rate/100))
+
+    /(p_years*12);
+
+    RETURN ROUND(v_emi,2);
+
+END;
+/
+
+-----------------------------------------------------------
+-- Test Function 2
+-----------------------------------------------------------
+
+BEGIN
+
+DBMS_OUTPUT.PUT_LINE(
+
+'Monthly EMI : '||
+
+CalculateEMI(500000,5,8)
+
+);
+
+END;
+/
+
+-----------------------------------------------------------
+-- Function 3
+-- Check Sufficient Balance
+-----------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION HasSufficientBalance(
+
+    p_account NUMBER,
+
+    p_amount NUMBER
+
+)
+
+RETURN VARCHAR2
+
+IS
+
+    v_balance NUMBER;
+
+BEGIN
+
+    SELECT Balance
+
+    INTO v_balance
+
+    FROM Accounts
+
+    WHERE AccountID=p_account;
+
+    IF v_balance>=p_amount THEN
+
+        RETURN 'YES';
+
+    ELSE
+
+        RETURN 'NO';
+
+    END IF;
+
+END;
+/
+
+-----------------------------------------------------------
+-- Test Function 3
+-----------------------------------------------------------
+
+BEGIN
+
+DBMS_OUTPUT.PUT_LINE(
+
+'Enough Balance : '||
+
+HasSufficientBalance(1,500)
+
+);
+
+END;
+/

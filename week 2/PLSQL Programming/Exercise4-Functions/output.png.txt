@@ -1,0 +1,11 @@
+Customer Age : 31
+
+PL/SQL procedure successfully completed.
+
+Monthly EMI : 9000
+
+PL/SQL procedure successfully completed.
+
+Enough Balance : YES
+
+PL/SQL procedure successfully completed.
